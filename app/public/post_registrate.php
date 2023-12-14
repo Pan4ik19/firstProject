@@ -32,13 +32,13 @@ class UserRegistration
         return $this->password;
     }
 
-    public function getErrors()
+    public function getErrors():array
     {
         return $this->errors;
     }
 
 
-    public function validateName($name)
+    public function validateName($name):string
     {
         $str = strlen($name);
         $pattern = "/^[a-zA-z]*$/";
@@ -46,32 +46,31 @@ class UserRegistration
             $this->errors['name'] = "Error! You didn't enter the Name.";
         }elseif (!preg_match ($pattern, $name)){
             $this->errors['name'] = "Error! You didn't enter the Name.";
-        }else {
-            return $name;
         }
-
+        return $name;
 
     }
 
-    public function validateEmail($email)
+    public function validateEmail($email):string
     {
         $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";
         if (!preg_match ($pattern, $email)){
             $this->errors['email'] = "Error! Email is not valid.";
-        } else {
-            return $email;
         }
+
+        return $email;
+
     }
 
-    public function validatePassword($password)
+    public function validatePassword($password):string
     {
         $len = strlen($password);
-        if ($len < 4)
-        {
+        if ($len < 4) {
             $this->errors['password'] = "Password is not valid";
-        } else {
-            return $password;
         }
+
+        return $password;
+
     }
 
     public function addUserToDataBase()
@@ -80,7 +79,6 @@ class UserRegistration
         {
             $pdo = new PDO("pgsql:host=db;dbname=postgres", "testuser", "qwerty");
             $pdo->exec("insert into users(name, email, password) values('$this->name','$this->email','$this->password')");
-            echo "Nice";
         }
     }
 
@@ -106,12 +104,7 @@ $user -> addUserToDataBase();
         <label style="color: red">
             <b>
                 <?php
-                    if (!isset($user->getErrors()['name'])){
-                        echo "successful";
-                    }else {
-                        echo $user->getErrors()['name'];
-                    }
-
+                    echo isset($user->getErrors()['name']) ?  $user->getErrors()['name']:'';
                 ?>
             </b>
         </label>
@@ -121,12 +114,7 @@ $user -> addUserToDataBase();
         <label style="color: red">
             <b>
                 <?php
-                    if (!isset($user->getErrors()['email']))
-                    {
-                        echo "Successful";
-                    } else {
-                        echo $user->getErrors()['email'];
-                    }
+                    echo isset($user->getErrors()['email']) ? $user->getErrors()['email']:'' ;
                 ?>
             </b>
         </label>
@@ -136,12 +124,7 @@ $user -> addUserToDataBase();
         <label style="color: red">
             <b>
                <?php
-                   if (!isset($user->getErrors()['password']))
-                   {
-                       echo "Successful";
-                   } else {
-                       echo $user->getErrors()['password'];
-                   }
+                    echo isset($user->getErrors()['password']) ? $user->getErrors()['password']:'';
                ?>
             </b>
         </label>

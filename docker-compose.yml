@@ -1,34 +1,31 @@
-version: '3.2'
+version: '3'
 services:
-  nginx:
-    build:
-      context: ./
-      dockerfile: docker/nginx.docker
+  web:
+    image: nginx
+    #из локального копирует в гостевую
     volumes:
-    - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html
     ports:
-    - "8080:80"
-    links:
+      - 8080:80
+    restart: always
+    depends_on:
       - php-fpm
-
+      - db
   php-fpm:
     build:
       context: ./
       dockerfile: docker/php-fpm.docker
+    restart: always
     volumes:
-      - ./:/var/www
-    environment:
-      - "DB_PORT=5432"
-      - "DB_HOST=db"
-    links:
-      - db
+      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - .:/var/www/html
 
   db:
     image: postgres:10.1
-    volumes:
-    - ./storage/docker/postgres:/var/lib/postgres
+    restart: always
     environment:
-    - POSTGRES_USER=testuser
-    - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=qwerty
     ports:
-    - "5432:5432"
+      - 5432:5432
