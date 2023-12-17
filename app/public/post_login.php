@@ -1,6 +1,4 @@
 <?php
-
-namespace registration;
 class User
 {
     private string $name;
@@ -12,7 +10,7 @@ class User
     {
         $this -> name = $name;
         $this -> email = $email;
-        $this -> password = password_hash($password,PASSWORD_DEFAULT);
+        $this -> password = $password;
     }
 
     public function getName():string
@@ -29,6 +27,10 @@ class User
     {
         return $this->password;
     }
+
+
+
+
 }
 
 class Validate
@@ -43,8 +45,8 @@ class Validate
     public function validateName( string $name):string
     {
         $str = strlen($name);
-        $pattern = "/^[a-zA-z]*$/";
-        if ($str == 0 && $str < 2 ){
+        $pattern = "/^[A-z]*$/";
+        if ( $str < 2 ){
             $this->errors['name'] = "Error! You didn't enter the Name.";
         }elseif (!preg_match ($pattern, $name)){
             $this->errors['name'] = "Error! You didn't enter the Name.";
@@ -61,6 +63,7 @@ class Validate
         }
 
         return $email;
+
     }
 
     public function validatePassword( string $password):string
@@ -77,19 +80,15 @@ class Validate
 
 }
 
-class Registrate
+class Login
 {
-    private Validate $validateObject;
     private User $userObject;
+    private Validate $validateObject;
 
-    public function __construct(User $user, Validate $validate)
+    public function __construct(User $user,Validate $validate )
     {
-        $this->validateObject=$validate;
         $this->userObject=$user;
-    }
-    public function getValidateObject(): Validate
-    {
-        return $this->validateObject;
+        $this->validateObject=$validate;
     }
 
     public function getUserObject(): User
@@ -97,48 +96,53 @@ class Registrate
         return $this->userObject;
     }
 
-    public function addUserToDataBase():bool
+    public function getValidateObject(): Validate
+    {
+        return $this->validateObject;
+    }
+
+    public function getUserFromDataBase(string $email):mixed
     {
         if (empty($this->validateObject->getErrors()))
         {
             $pdo = new \PDO("pgsql:host=db;dbname=postgres", "postgres", "postgres");
-            $statement = $pdo->prepare("insert into users(name, email, password) values(:name,:email,:password)");
-            $statement->execute(['name' =>$this->userObject->getName(), 'email' => $this->userObject->getEmail(), 'password' => $this->userObject->getPassword()]);
-            return true;
-        }
-        return false;
+            $statement = $pdo->prepare("Select * FROM users where email = :email");
+            $statement->execute(['email' => $email]);
+            return $statement->fetch();
+
+        }else return [];
     }
+
+//    public function sessionStart(string $password, array $data)
+//    {
+//
+//    }
+
+
 }
 
-
-
-
-$name = $_POST['name'];
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-
 $validate = new Validate();
-$user = new User($validate->validateName($name), $validate->validateEmail($email), $validate->validatePassword($password));
-$registrate = new Registrate($user,$validate);
-$flag = $registrate->addUserToDataBase();
+$user1 = new User('', $validate->validateEmail($email),$validate->validatePassword($password));
+$login1 = new Login($user1,$validate);
 
-if($flag){
+$data = $login1->getUserFromDataBase($login1->getUserObject()->getEmail());
 
-    header('Location:/get_login.php');
+$loginFlag =false;
+if (gettype($data)==="array" && isset($data['password']))
+{
+    if (password_verify($login1->getUserObject()->getPassword(), $data['password']))
+    {
+        session_start();
+        $_SESSION['user_id'] = $data['id'];
+        header('Location:/main.php ');
+        $loginFlag=true;
+    }
 }else{
-    require_once './get_registrate.php';
+    require_once './get_login.php';
 }
-?>
-
-
-
-
-
-
-
-
-
 
 
 

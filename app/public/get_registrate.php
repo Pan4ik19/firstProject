@@ -5,13 +5,39 @@
         <hr>
 
         <label for="name"><b>name</b></label>
+        <label style="color: red">
+            <b>
+                <?php
+                if(isset($validate1))
+                {echo  $validate1->getErrors()['name'] ?? '';}
+                ?>
+            </b>
+        </label>
         <input type="text" placeholder="Enter name" name="name" id="name" required>
 
         <label for="email"><b>Email</b></label>
+        <label style="color: red">
+            <b>
+                <?php
+                if(isset($validate1))
+                {echo $validate1->getErrors()['email'] ?? '';}
+                //
+                ?>
+            </b>
+        </label>
         <input type="text" placeholder="Enter Email" name="email" id="email" required>
 
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+        <label for="password"><b>Password</b></label>
+        <label style="color: red">
+            <b>
+                <?php
+                if(isset($validate1))
+                {echo $validate1->getErrors()['password'] ?? '';}
+                //
+                ?>
+            </b>
+        </label>
+        <input type="password" placeholder="Enter Password" name="password" id="psw" required>
 
         <label for="psw-repeat"><b>Repeat Password</b></label>
         <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
@@ -22,7 +48,7 @@
     </div>
 
     <div class="container signin">
-        <p>Already have an account? <a href="#">Sign in</a>.</p>
+        <p>Already have an account? <a href="./get_login.php">Sign in</a>.</p>
     </div>
 </form>
 
@@ -82,4 +108,3 @@
         text-align: center;
     }
 </style>
-
