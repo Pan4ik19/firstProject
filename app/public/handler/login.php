@@ -121,8 +121,8 @@ class Login
 
 }
 
-$email = $_POST['email'];
-$password = $_POST['password'];
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
 
 $validate = new Validate();
 $user1 = new User('', $validate->validateEmail($email),$validate->validatePassword($password));
@@ -137,11 +137,11 @@ if (gettype($data)==="array" && isset($data['password']))
     {
         session_start();
         $_SESSION['user_id'] = $data['id'];
-        header('Location:/main.php ');
+        header('Location:/main');
         $loginFlag=true;
     }
 }else{
-    require_once './get_login.php';
+    require_once './html/login.php';
 }
 
 

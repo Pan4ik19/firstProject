@@ -2,7 +2,7 @@
     <div class="container">
         <div class="card">
             <h2>Login Form</h2>
-            <form action="post_login.php" method="post">
+            <form action="/login" method="post">
                 <label for="username">Username</label>
 
                 <input type="text" id="username" name="email" placeholder="Enter your username">
@@ -10,35 +10,19 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password">
 
-                <button type="submit">Login</button>
+                <button type="submit" >Login</button>
 
                 <label for="username" style="color: red">
                     <?php
-                    if($loginFlag === false)
-                    {
-                        echo "Error username is not found";
+                    if(isset($loginFlag)){
+                        if(!$loginFlag ){
+                            echo "Error username is not found";
+                        }
                     }
                     ?>
                 </label>
             </form>
-            <div class="switch">Don't have an account? <a href="./get_registrate.php" onclick="switchCard()">Register here</a></div>
-        </div>
-
-        <div class="card" style="display: none;">
-            <h2>Register Form</h2>
-            <form>
-                <label for="fullname">Full Name</label>
-                <input type="text" id="fullname" placeholder="Enter your full name">
-
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email">
-
-                <label for="new-password">New Password</label>
-                <input type="password" id="new-password" placeholder="Enter your new password">
-
-                <button type="submit">Register</button>
-            </form>
-            <div class="switch">Already have an account? <a href="#" onclick="switchCard()">Login here</a></div>
+            <div class="switch">Don't have an account? <a href="/registrate" >Register here</a></div>
         </div>
     </div>
 

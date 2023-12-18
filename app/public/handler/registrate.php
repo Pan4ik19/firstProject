@@ -113,9 +113,9 @@ class Registrate
 
 
 
-$name = $_POST['name'];
-$email = $_POST['email'];
-$password = $_POST['password'];
+$name = $_POST['name'] ?? '';
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
 
 
 $validate = new Validate();
@@ -125,9 +125,9 @@ $flag = $registrate->addUserToDataBase();
 
 if($flag){
 
-    header('Location:/get_login.php');
+    header('Location:/login');
 }else{
-    require_once './get_registrate.php';
+    require_once './html/registrate.php';
 }
 ?>
 
