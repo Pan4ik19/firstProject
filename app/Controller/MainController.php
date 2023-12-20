@@ -1,8 +1,14 @@
 <?php
 
+require_once './../Model/Product.php';
 class MainController
 {
+    private Product $productModel;
 
+    public function __construct()
+    {
+        $this->productModel = new Product();
+    }
     public function getMain()
     {
         require_once './../View/main.php';
@@ -14,9 +20,7 @@ class MainController
         {
             header("Location:/login");
         }else{
-            $pdo = new \PDO("pgsql:host=db;dbname=postgres", "postgres", "postgres");
-            $statement = $pdo->query("SELECT * FROM products");
-            $products = $statement->fetchAll();
+            $products = $this->productModel->getALL();
             require_once './../View/main.php';
         }
     }

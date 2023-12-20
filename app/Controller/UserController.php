@@ -1,105 +1,94 @@
 <?php
 
+require_once './../Model/User.php';
+
 class UserController
 {
-    private PDO $pdo;
+    private User $modelUser;
     private array $errors;
 
     public function __construct()
     {
-        $this->pdo=new \PDO("pgsql:host=db;dbname=postgres", "postgres", "postgres");
+        $this->modelUser=new User();
     }
-
-    private function validateName(array $data)
+    private function isValidate(string $email, string $password, string $name = NULL):bool
     {
-        $pattern = "/^[A-z]*$/";
-        $error = NULL;
-        $name = $data['name'] ?? '' ;
-        if (strlen($name) < 2 ){
-            $error = "Error! You didn't enter the Name.";
-        }elseif (!preg_match ($pattern, $name)){
-            $error = "Error! You didn't enter the Name.";
-        }
-        return $error;
-    }
-
-    private function validateEmail(array $data)
-    {
-        $error = NULL;
         $pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";
-        $email= $data['email'];
         if (!preg_match ($pattern, $email))
         {
-            $error = "Error! Email is not valid.";
+            $this->errors['email'] = "Error! Email is not valid.";
+        }
+        if (strlen($password) < 4) {
+            $this->errors['password'] = "Password is not valid";
+        }
+        $flagName = $name ? true : false;
+        if ($flagName)
+        {
+            $pattern = "/^[A-z]*$/";
+            if (strlen($name) < 2 ){
+                $this->errors['name'] = "Error! You didn't enter the Name.";
+            }elseif (!preg_match ($pattern, $name)){
+                $this->errors['name'] = "Error! You didn't enter the Name.";
+            }
         }
 
-        return $error;
-    }
-    private function validatePassword(array $data)
-    {
-        $error = NULL;
-        $password = $data['password'];
-        if (strlen($password) < 4) {
-            $error = "Password is not valid";
+        if(empty($this->errors))
+        {
+            if($flagName)
+            {
+                $dataDB = $this->modelUser->getOneByEmail($email);
+                if(gettype($dataDB) === "array")
+                {
+                    $this->errors['email'] = "This email is used";
+                }
+            }
         }
-        return $error;
+        return empty($this->errors) ? true: false;
     }
+
+    public function getErrors():array
+    {
+        return $this->errors;
+    }
+
     public function registrate(array $data)
     {
-        if($this->validateName($data) !== NULL){
-            $errors['name'] = $this->validateName($data);
-        }
-        if($this->validateEmail($data) !== NULL){
-            $errors['email'] = $this->validateEmail($data);
-        }
-        if($this->validatePassword($data) !== NULL){
-            $errors['password'] = $this->validatePassword($data);
-        }
-        if (empty($errors))
+        $flagValidate = $this->isValidate($data['email'] ?? '',$data['password'] ?? '',$data['name'] ?? '');
+        if ($flagValidate)
         {
             $password = password_hash($data['password'],PASSWORD_DEFAULT);
-            $statement = $this->pdo->prepare("insert into users(name, email, password) values(:name,:email,:password)");
-            $statement->execute(['name' =>$data['name'], 'email' => $data['email'], 'password' =>$password ]);
+            $this->modelUser->createOne($data['name'],$data['email'], $password);
             header('Location:/login');
+        }else {
+            $errors = $this->getErrors();
+            require_once './../View/registrate.php';
         }
-        require_once './../View/registrate.php';
     }
 
     public function login($data)
     {
-        $errors=[];
-        if($this->validateEmail($data) !== NULL){
-            $errors['email'] = $this->validateEmail($data);
-        }
-        if($this->validatePassword($data) !== NULL){
-            $errors['password'] = $this->validatePassword($data);
-        }
-
-        $flag = false;
-        if (empty($errors))
+        $flagFound = false;
+        $flagValidate = $this->isValidate($data['email'] ?? '',$data['password'] ?? '');
+        if ($flagValidate)
         {
-            //$pdo = new \PDO("pgsql:host=db;dbname=postgres", "postgres", "postgres");
-            $statement = $this->pdo->prepare("Select * FROM users where email = :email");
-            $statement->execute(['email' => $data['email']]);
-            $dataDb = $statement->fetch();
-            if (gettype($dataDb) === "array" && isset($data['password'] ))
+            $dataDB = $this->modelUser->getOneByEmail($data['email']);
+            if (gettype($dataDB) === "array")
             {
-                if (password_verify($data['password'], $dataDb['password']))
+                if (password_verify($data['password'], $dataDB['password']))
                 {
                     session_start();
-                    $_SESSION['user_id'] = $dataDb['id'];
+                    $_SESSION['user_id'] = $dataDB['id'];
                     header('Location:/main');
-                    $flag=true;
+                    $flagFound=true;
                 }
             }
         }
-        if (!$flag)
+        if (!$flagFound)
         {
-            $errors['not_found']='User is not found';
+            $this->errors['not_found']='User is not found';
         }
+        $errors = $this->getErrors();
         require_once './../View/login.php';
-
-
     }
 
     public function logout()
