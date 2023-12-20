@@ -1,7 +1,10 @@
 <form action="/main" method="post">
     <div class="container">
         <h3>Catalog</h3>
-        <?php foreach ($products as $product): ?>
+        <?php
+            if(isset($products) && gettype($products) === "array"){
+                 foreach ($products as $product):
+        ?>
         <div class="card-deck">
             <div class="card text-center">
                 <a href="#">
@@ -20,7 +23,8 @@
             </div>
         </div>
     </div>
-    <?php endforeach;?>
+    <?php endforeach;} else{echo "notWORk";}?>
+    <button type="submit" name="logout"> logout</button>
 </form>
 
 <style>

@@ -14,11 +14,21 @@
 
                 <label for="username" style="color: red">
                     <?php
-                    if(isset($loginFlag)){
-                        if(!$loginFlag ){
-                            echo "Error username is not found";
+                       if(isset($errors))
+                        {
+
+                            switch ($errors){
+                                case isset($errors['email']):
+                                    echo $errors['email'];
+                                    break;
+                                case isset($errors['password']):
+                                    echo $errors['password'];
+                                    break;
+                                case isset($errors['not_found']):
+                                    echo $errors['not_found'];
+                                    break;
+                            }
                         }
-                    }
                     ?>
                 </label>
             </form>

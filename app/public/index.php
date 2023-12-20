@@ -1,47 +1,93 @@
 <?php
+require_once './../Controller/UserController.php';
+require_once  './../Controller/MainController.php';
+
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $requestMethod = $_SERVER['REQUEST_METHOD'];
-
-$pages =['/registrate'=>
-             [   'GET'=>'./html/registrate.php',
-                 'POST'=>'./handler/registrate.php'],
-         '/login'=>
-             [   'GET'=>'./html/login.php',
-                 'POST'=>'./handler/login.php'],
-         '/main'=>
-             [   'GET'=>'./handler/main.php',
-                 'POST'=>'./handler/main.php']
-        ];
-
-
-
-
-require_once $pages[$requestUri][$requestMethod] ?? './html/not_found.php';
-//$getRequest= [];
-//$postRequest=[];
-
-
-//if ($requestUri === '/registrate')
+//if($requestMethod === 'GET')
 //{
-//    if($requestMethod === 'GET'){
-//        require_once './html/registrate.php';
-//    }elseif ($requestMethod ==='POST'){
-//        require_once './handler/registrate.php';
-//    }else{
-//        echo 'такой $requestMethod не поддерживается';
-//    }
+//    switch ($requestUri){
+//        case '/registrate':
+//            $userController = new UserController();
+//            $userController->getRegistrate();
+//            break;
+//        case '/login':
+//            $userController = new UserController();
+//            $userController->getLogin();
+//            break;
+//        case '/main':
+//            $mainController = new MainController();
+//            $products = $mainController->getProducts();
+//            $mainController->getMain();
 //
-//}elseif ($requestUri === '/login')
-//{
-//    if($requestMethod === 'GET'){
-//        require_once './html/login.php';
-//    }elseif ($requestMethod ==='POST'){
-//        require_once './handler/login.php';
-//    }else{
-//        echo 'такой $requestMethod не поддерживается';
+//            break;
+//        default:
+//            require_once './../View/not_found.php';
 //    }
-//}else
-//{
-//    require_once './html/not_found.php';
 //}
+//elseif($requestMethod === 'POST')
+//{
+//    switch ($requestUri){
+//        case '/registrate':
+//            $userController = new UserController();
+//            $data = $userController->registrate($_POST);
+//            break;
+//        case '/login':
+//            $userController = new UserController();
+//            $data = $userController->login($_POST);
+//            break;
+//        case '/main':
+//            $userController = new UserController();
+//            $userController->logout();
+//            break;
+//        default:
+//            require_once './../View/not_found.php';
+//    }
+//}
+
+if($requestUri === '/registrate')
+{
+    switch ($requestMethod){
+        case 'GET':
+            $userController = new UserController();
+            $userController->getRegistrate();
+            break;
+        case 'POST':
+            $userController = new UserController();
+            $userController->registrate($_POST);
+            break;
+        default:
+            require_once './../View/not_found.php';
+    }
+}
+elseif($requestUri === '/login')
+{
+    switch ($requestMethod){
+        case 'GET':
+            $userController = new UserController();
+            $userController->getLogin();
+            break;
+        case 'POST':
+            $userController = new UserController();
+            $userController->login($_POST);
+            break;
+        default:
+            require_once './../View/not_found.php';
+    }
+}elseif($requestUri === '/main')
+{
+    switch ($requestMethod){
+        case 'GET':
+            $mainController = new MainController();
+            $mainController->getProducts();
+            break;
+        case 'POST':
+            $userController = new UserController();
+            $userController->logout();
+            break;
+        default:
+            require_once './../View/not_found.php';
+    }
+}
+

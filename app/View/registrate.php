@@ -8,8 +8,10 @@
         <label style="color: red">
             <b>
                 <?php
-                if(isset($validate1))
-                {echo  $validate1->getErrors()['name'] ?? '';}
+                if(isset($errors['name']))
+                {
+                    echo $errors['name'];
+                }
                 ?>
             </b>
         </label>
@@ -19,9 +21,10 @@
         <label style="color: red">
             <b>
                 <?php
-                if(isset($validate1))
-                {echo $validate1->getErrors()['email'] ?? '';}
-                //
+                if(isset($errors['email']))
+                {
+                    echo $errors['email'];                       
+                }
                 ?>
             </b>
         </label>
@@ -31,8 +34,10 @@
         <label style="color: red">
             <b>
                 <?php
-                if(isset($validate1))
-                {echo $validate1->getErrors()['password'] ?? '';}
+                    if(isset($errors['password']))
+                    {
+                        echo $errors['password']; 
+                    }
                 //
                 ?>
             </b>
