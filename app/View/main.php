@@ -1,10 +1,11 @@
-<form action="/main" method="post">
-    <div class="container">
-        <h3>Catalog</h3>
-        <?php
-            if(isset($products) && gettype($products) === "array"){
-                 foreach ($products as $product):
-        ?>
+
+<div class="container">
+    <h3>Catalog</h3>
+    <?php
+    if(isset($products) && gettype($products) === "array"){
+        foreach ($products as $product):
+    ?>
+    <form action="/addProduct" method="post">
         <div class="card-deck">
             <div class="card text-center">
                 <a href="#">
@@ -17,14 +18,24 @@
                         <a href="#"><h5 class="card-title"><?php echo $product['name']; ?></h5></a>
                         <div class="card-footer">
                             <?php echo $product['prise']; ?>
+                            <input type="hidden"  name="productId" value="<?php echo $product['id']?>">
+                            <input type="text" name="quantity" placeholder="quantity">
+                            <button type="submit"> buy </button>
                         </div>
                     </div>
                 </a>
             </div>
         </div>
+    </form>
     </div>
     <?php endforeach;} else{echo "notWORk";}?>
+
+<form action="/logout" method="post">
     <button type="submit" name="logout"> logout</button>
+</form>
+
+<form action="/basket" method="post">
+    <button type="submit" name="basket">basket</button>
 </form>
 
 <style>

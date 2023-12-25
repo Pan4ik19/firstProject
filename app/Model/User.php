@@ -1,19 +1,18 @@
 <?php
 
-class User
+namespace Model;
+class User extends Model
 {
-    private PDO $pdo;
-
-    public function __construct()
-    {
-        require_once './../Model/storage.php';
-        $this->pdo = $storagePdo;
-    }
-
-    public function getOneByEmail(string $email)
+    public function getOneByEmail(string $email): array|false
     {
         $statement = $this->pdo->prepare("Select * FROM users where email = :email");
         $statement->execute(['email' => $email]);
+        return $statement->fetch();
+    }
+    public function getOneById(int $userId): array|false
+    {
+        $statement = $this->pdo->prepare("Select * FROM users where id = :id");
+        $statement->execute(['id' => $userId]);
         return $statement->fetch();
     }
 

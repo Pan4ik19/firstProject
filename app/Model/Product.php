@@ -1,19 +1,18 @@
 <?php
 
-class Product
+namespace Model;
+class Product extends Model
 {
-    private PDO $pdo;
-
-    public function __construct()
-    {
-        require_once './../Model/storage.php';
-        $this->pdo = $storagePdo;
-
-    }
-
-    public function getALL()
+    public function getALL():array|false
     {
         $statement = $this->pdo->query("SELECT * FROM products");
         return $statement->fetchAll();
+    }
+
+    public function getOneByID($id):array|false
+    {
+        $statement = $this->pdo->query("SELECT id FROM products where id = :id");
+        $statement->execute(['id' => $id]);
+        return $statement->fetch();
     }
 }

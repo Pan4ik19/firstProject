@@ -1,66 +1,28 @@
 <?php
 
-require_once './../Model/User.php';
+namespace Controller;
+
+
+use Model\User;
 
 class UserController
 {
     private User $modelUser;
-    private array $errors;
 
     public function __construct()
     {
-        $this->modelUser=new User();
-    }
-    private function isValidate(string $email, string $password, string $name = NULL):bool
-    {
-        $pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";
-        if (!preg_match ($pattern, $email))
-        {
-            $this->errors['email'] = "Error! Email is not valid.";
-        }
-        if (strlen($password) < 4) {
-            $this->errors['password'] = "Password is not valid";
-        }
-        $flagName = $name ? true : false;
-        if ($flagName)
-        {
-            $pattern = "/^[A-z]*$/";
-            if (strlen($name) < 2 ){
-                $this->errors['name'] = "Error! You didn't enter the Name.";
-            }elseif (!preg_match ($pattern, $name)){
-                $this->errors['name'] = "Error! You didn't enter the Name.";
-            }
-        }
-
-        if(empty($this->errors))
-        {
-            if($flagName)
-            {
-                $dataDB = $this->modelUser->getOneByEmail($email);
-                if(gettype($dataDB) === "array")
-                {
-                    $this->errors['email'] = "This email is used";
-                }
-            }
-        }
-        return empty($this->errors) ? true: false;
-    }
-
-    public function getErrors():array
-    {
-        return $this->errors;
+        $this->modelUser = new User();
     }
 
     public function registrate(array $data)
     {
-        $flagValidate = $this->isValidate($data['email'] ?? '',$data['password'] ?? '',$data['name'] ?? '');
-        if ($flagValidate)
+        $errors=$this->validateRegistrate($data);
+        if (empty($errors))
         {
             $password = password_hash($data['password'],PASSWORD_DEFAULT);
             $this->modelUser->createOne($data['name'],$data['email'], $password);
             header('Location:/login');
         }else {
-            $errors = $this->getErrors();
             require_once './../View/registrate.php';
         }
     }
@@ -68,11 +30,11 @@ class UserController
     public function login($data)
     {
         $flagFound = false;
-        $flagValidate = $this->isValidate($data['email'] ?? '',$data['password'] ?? '');
-        if ($flagValidate)
+        $errors = $this->validateLogin($data);
+        if (empty($errors))
         {
             $dataDB = $this->modelUser->getOneByEmail($data['email']);
-            if (gettype($dataDB) === "array")
+            if ($dataDB)
             {
                 if (password_verify($data['password'], $dataDB['password']))
                 {
@@ -85,18 +47,47 @@ class UserController
         }
         if (!$flagFound)
         {
-            $this->errors['not_found']='User is not found';
+            $errors['not_found']='User is not found';
         }
-        $errors = $this->getErrors();
         require_once './../View/login.php';
     }
 
-    public function logout()
+    private function validateLogin(array $data):array
     {
-        session_start();
-        unset($_SESSION['user_id']);
-        header('Location: /login');
+        $errors =[];
+        $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";
+        if (!preg_match($pattern, $data['email'] ))
+        {
+            $errors['email'] = "Error! Email is not valid.";
+        }
+        if (strlen($data['password'] < 4))
+        {
+            $errors['password'] = "Error! Password is not valid.";;
+        }
+        return $errors;
     }
+
+    private function validateRegistrate(array $data):array
+    {
+        $errors = $this->validateLogin($data);
+        $pattern = "/^[A-z]*$/";
+        if (strlen($data['name']) < 2 ){
+            $errors['name'] = "Error! You didn't enter the Name.";
+        }elseif (!preg_match ($pattern, $data['name'])){
+            $errors['name'] = "Error! You didn't enter the Name.";
+        }
+        if (empty($errors['email']))
+        {
+            $dataDB = $this->modelUser->getOneByEmail($data['email']);
+            if(!empty($dataDB))
+            {
+                $errors['email'] = "This email is used";
+            }
+        }
+        return $errors;
+    }
+
+
 
     public function getRegistrate()
     {
