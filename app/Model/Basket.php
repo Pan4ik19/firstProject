@@ -28,4 +28,14 @@ class Basket extends Model
                             'quantity' => $data['quantity']
         ]);
     }
+
+    public function getProductsFromBasket($userId)
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM products 
+                                                         JOIN cart_product 
+                                                         ON products.id = cart_product.product_id
+                                                         WHERE cart_id = :cardId");
+        $statement->execute(['cardId'=> $userId]);
+        return $statement->fetchAll();
+    }
 }

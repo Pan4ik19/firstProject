@@ -1,10 +1,10 @@
 
-    <form action="/main" method="post">
+    <form action="/" method="post">
         <div class="container">
             <h3>Basket</h3>
             <?php
-            if(isset($products) && gettype($products) === "array"){
-            foreach ($products as $product):
+            if(isset($basketWithProducts)){
+                foreach ($basketWithProducts as $product):
             ?>
             <div class="card-deck">
                 <div class="card text-center">
@@ -18,7 +18,8 @@
                             <a href="#"><h5 class="card-title"><?php echo $product['name']; ?></h5></a>
                             <div class="card-footer">
                                 <?php echo $product['prise']; ?>
-                                <button type="submit" id="<?php echo $product['id']?>" name="product"> buy </button>
+                                <input type="hidden"  name="productId" value="<?php echo $product['id']?>">
+                                <input type="text" name="quantity" placeholder="quantity" value="<?php echo $product['quantity']?>">
                             </div>
                         </div>
                     </a>

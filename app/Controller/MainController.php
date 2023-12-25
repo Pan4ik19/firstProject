@@ -33,11 +33,9 @@ class MainController
     {
         session_start();
         $flagSession = $this->isSession();
-        if($flagSession)
-        {
-            $products = $this->productModel->getALL();
-            require_once './../View/main.php';
-        }
+        $products = $this->productModel->getALL();
+        require_once './../View/main.php';
+
     }
     public function logout()
     {
@@ -50,12 +48,10 @@ class MainController
     {
         session_start();
         $flagSession = $this->isSession();
-        if ($flagSession){
-            $basket = $this->basketModel->getBasketByUserId($_SESSION['user_id']);
-            if($basket){
-                // Вывод корзины
-                require_once './../View/basket.php';
-            }
+        $basket = $this->basketModel->getBasketByUserId($_SESSION['user_id']);
+        if($basket){
+            $basketWithProducts = $this->basketModel->getProductsFromBasket($basket['id']);
+            require_once './../View/basket.php';
         }
     }
 
