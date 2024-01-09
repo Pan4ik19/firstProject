@@ -44,7 +44,7 @@ class App
             ],
             'POST'=>[
                 'class'=> MainController::class,
-                'method'=> 'logout',
+                'method'=> 'getProducts',
             ]
         ],
         '/addProduct'=>[

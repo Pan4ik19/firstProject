@@ -59,7 +59,7 @@ class MainController
     {
         session_start();
         $userId = $_SESSION['user_id'];
-        $data['userId'] = $userId;
+        //$data['userId'] = $userId;
         $basket = $this->basketModel->getBasketByUserId($userId);
         if($basket){
             $data['cartId'] = $basket['id'];

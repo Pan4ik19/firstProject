@@ -29,7 +29,7 @@
         <?php endforeach;} else{echo "notWORk";}?>
     </form>
 
-    <form action="/main" method="post">
-        <button type="submit" name="basket">catalog</button>
+    <form action="/main" method="get">
+        <button type="submit">catalog</button>
     </form>
 
