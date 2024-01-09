@@ -1,6 +1,7 @@
 <?php
 
-use Controller\BasketController;
+use Controller\CartController;
+use Controller\CartProductController;
 use Controller\MainController;
 use Controller\UserController;
 
@@ -49,22 +50,22 @@ class App
         ],
         '/addProduct'=>[
             'GET'=>[
-                'class'=> MainController::class,
-                'method'=> 'getBasket',
+                'class'=> CartProductController::class,
+                'method'=> 'getCart',
             ],
             'POST'=>[
-                'class'=> MainController::class,
-                'method'=> 'addProductInBasket',
+                'class'=> CartProductController::class,
+                'method'=> 'addProductInCart',
             ]
         ],
-        '/basket'=>[
+        '/cart'=>[
             'GET'=>[
-                'class'=> MainController::class,
-                'method'=> 'getBasket',
+                'class'=> CartController::class,
+                'method'=> 'getCart',
             ],
             'POST'=>[
-                'class'=> MainController::class,
-                'method'=> 'getBasket',
+                'class'=> CartController::class,
+                'method'=> 'getCart',
             ]
         ]
     ];

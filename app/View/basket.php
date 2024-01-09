@@ -2,10 +2,8 @@
     <form action="/" method="post">
         <div class="container">
             <h3>Basket</h3>
-            <?php
-            if(isset($basketWithProducts)){
-                foreach ($basketWithProducts as $product):
-            ?>
+            <?php if(!empty($basketWithProducts)): ?>
+            <?php foreach ($basketWithProducts as $product): ?>
             <div class="card-deck">
                 <div class="card text-center">
                     <a href="#">
@@ -26,7 +24,8 @@
                 </div>
             </div>
         </div>
-        <?php endforeach;} else{echo "notWORk";}?>
+        <?php endforeach; ?>
+        <?php endif;?>
     </form>
 
     <form action="/main" method="get">

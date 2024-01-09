@@ -1,11 +1,10 @@
 
 <div class="container">
     <h3>Catalog</h3>
-    <?php
-    if(isset($products) && gettype($products) === "array"){
-        foreach ($products as $product):
-    ?>
-    <form action="/addProduct" method="post">
+    <?php if(!empty($products)): ?>
+        <?php foreach ($products as $product): ?>
+
+        <form action="/addProduct" method="post">
         <div class="card-deck">
             <div class="card text-center">
                 <a href="#">
@@ -27,14 +26,17 @@
             </div>
         </div>
     </form>
+
+    <?php endforeach; ?>
+    <?php endif;?>
     </div>
-    <?php endforeach;} else{echo "notWORk";}?>
+
 
 <form action="/logout" method="post">
     <button type="submit" name="logout"> logout</button>
 </form>
 
-<form action="/basket" method="post">
+<form action="/cart" method="post">
     <button type="submit" name="basket">basket</button>
 </form>
 
