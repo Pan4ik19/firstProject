@@ -14,7 +14,7 @@
                     <img class="card-img-top" src="<?php echo $product['image']; ?>" alt="Card image">
                     <div class="card-body">
                         <p class="card-text text-muted">Category name</p>
-                        <a href="#"><h5 class="card-title"><?php echo $product['name']; ?></h5></a>
+                        <h5 class="card-title"><?php echo $product['name']; ?></h5>
                         <div class="card-footer">
                             <?php echo $product['prise']; ?>
                             <input type="hidden"  name="productId" value="<?php echo $product['id']?>">

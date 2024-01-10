@@ -4,7 +4,7 @@ namespace Controller;
 use Model\Basket;
 use Model\Product;
 
-class MainController
+class MainController extends Controller
 {
     private Product $productModel;
 
@@ -23,28 +23,17 @@ class MainController
         $flagSession = $this->getUserId();
         if(empty($flagSession))
         {
-            header("Location:/login");
+            $this->getLoginLocation();
         }else{
             $products = $this->productModel->getALL();
             require_once './../View/main.php';
         }
-
-    }
-
-    public function getUserId():int|null
-    {
-        session_start();
-        if(isset($_SESSION['user_id']))
-        {
-            return $_SESSION['user_id'];
-        }
-        return null;
     }
 
     public function logout()
     {
         session_start();
         unset($_SESSION['user_id']);
-        header('Location: /login');
+        $this->getLoginLocation();
     }
 }

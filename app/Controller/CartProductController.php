@@ -5,7 +5,7 @@ namespace Controller;
 use Model\Cart;
 use Model\CartProduct;
 
-class CartProductController
+class CartProductController extends Controller
 {
     private Cart $cartModel;
     private CartProduct $cartProduct;
@@ -13,21 +13,25 @@ class CartProductController
     public function __construct()
     {
         $this->cartModel = new Cart();
-        $this->cartProduct= new CartProduct();
+        $this->cartProduct = new CartProduct();
     }
     public function addProductInCart(array $data)
     {
-        session_start();
-        $userId = $_SESSION['user_id'];
-        //$data['userId'] = $userId;
-        $basket = $this->cartModel->getCartByUserId($userId);
-        if($basket){
-            $data['cartId'] = $basket['id'];
-            $this->cartProduct->addProduct($data);
+        $userId = $this->getUserId();
+        if(!$userId){
+            $this->getLoginLocation();
+        }elseif(!$data){
+            $this->getMainLocation();
         }else{
-            $this->cartModel->createCart($userId);
-            $this->cartProduct->addProduct($data);
+            $basket = $this->cartModel->getCartByUserId($userId);
+            if($basket){
+                $data['cartId'] = $basket['id'];
+                $this->cartProduct->addProduct($data);
+            }else{
+                $this->cartModel->createCart($userId);
+                $this->cartProduct->addProduct($data);
+            }
+            $this->getMainLocation();
         }
-        header('Location:/main');
     }
 }

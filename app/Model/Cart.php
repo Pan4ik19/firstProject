@@ -19,7 +19,7 @@ class Cart extends Model
         return $statement->fetch();
     }
 
-    public function getProductsFromBasket(int $userId)
+    public function getProductsFromCartByUserId(int $userId):array|false
     {
         $statement = $this->pdo->prepare("SELECT * FROM products 
                                                          JOIN cart_product 

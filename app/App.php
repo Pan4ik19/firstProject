@@ -3,6 +3,7 @@
 use Controller\CartController;
 use Controller\CartProductController;
 use Controller\MainController;
+use Controller\OrderUserController;
 use Controller\UserController;
 
 class App
@@ -51,7 +52,7 @@ class App
         '/addProduct'=>[
             'GET'=>[
                 'class'=> CartProductController::class,
-                'method'=> 'getCart',
+                'method'=> 'addProductInCart',
             ],
             'POST'=>[
                 'class'=> CartProductController::class,
@@ -66,6 +67,16 @@ class App
             'POST'=>[
                 'class'=> CartController::class,
                 'method'=> 'getCart',
+            ]
+        ],
+        '/order'=>[
+            'GET'=>[
+                'class'=> OrderUserController::class,
+                'method'=> 'createOrder',
+            ],
+            'POST'=>[
+                'class'=> OrderUserController::class,
+                'method'=> 'createOrder',
             ]
         ]
     ];

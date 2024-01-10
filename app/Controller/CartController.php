@@ -4,8 +4,9 @@ namespace Controller;
 
 use Model\Cart;
 
-class CartController
+class CartController extends Controller
 {
+
     private Cart $cartModel;
     public function __construct()
     {
@@ -14,13 +15,14 @@ class CartController
 
     public function getCart()
     {
-        session_start();
-        $basket = $this->cartModel->getCartByUserId($_SESSION['user_id']);
-        if(empty($basket)){
-            header('Location: /login');
+        $userId = $this->getUserId();
+        if (!$userId){
+            $this->getLoginLocation();
         }else{
-            $basketWithProducts = $this->cartModel->getProductsFromBasket($basket['id']);
+            $basket = $this->cartModel->getCartByUserId($userId);
+            $basketWithProducts = $this->cartModel->getProductsFromCartByUserId($basket['id']);
             require_once './../View/basket.php';
         }
+
     }
 }
